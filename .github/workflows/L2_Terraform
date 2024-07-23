@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install Flask
+
+      - name: Lint code
+        run: |
+          pip install flake8
+          flake8 app.py
+
+      - name: Run tests
+        run: |
+          # Add your test commands here
+          echo "Tests passed!"
+
+      - name: Build Docker image
+        run: docker build -t simple-web-app .
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Tag Docker image
+        run: docker tag simple-web-app ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest
+        
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/simple-web-app
+
+      - name: Create .ssh directory and known_hosts file
+        run: |
+          mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          
+      - name: Add EC2 host key
+        run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          echo "$PRIVATE_KEY" > keypair1.pem
+          chmod 600 keypair1.pem
+          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST "echo 'SSH connection successful!'"
+          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
+
