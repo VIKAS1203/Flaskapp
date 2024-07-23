@@ -45,24 +45,35 @@ jobs:
         
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/simple-web-app
-        
+
+      - name: Create .ssh directory and known_hosts file
+        run: |
+          mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          
       - name: Add EC2 host key
         run: ssh-keyscan -H ${{ secrets.EC2_PUBLIC_IP }} >> ~/.ssh/known_hosts
-        
+
       - name: Deploy to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          echo "$PRIVATE_KEY" > ec2_key.pem
-          chmod 600 ec2_key.pem
-          scp -i ec2_key.pem docker-compose.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/
-          ssh -i ec2_key.pem $EC2_USER@$EC2_HOST << EOF
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app
-            docker stop $(docker ps -a -q) || true
-            docker rm $(docker ps -a -q) || true
-            docker run -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app
-          EOF
+          echo "$PRIVATE_KEY" > keypair1.pem
+          chmod 600 keypai1.pem
+          ssh -o StrictHostKeyChecking=no -i keypair1.pem ec2-user@${{ secrets.EC2_HOST }} "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
+
+    #  - name: Deploy to EC2
+    #    env:
+    #      PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+    #      EC2_USER: ${{ secrets.EC2_USER }}
+    #      EC2_HOST: ${{ secrets.EC2_HOST }}
+    #    run: |
+    #      echo "$PRIVATE_KEY" > ec2_key.pem
+    #      chmod 600 ec2_key.pem
+    #      scp -i ec2_key.pem docker-compose.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/
+    #      ssh -i ec2_key.pem $EC2_USER@$EC2_HOST << EOF
+    #        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    #        docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app
+    #        docker stop $(docker ps -a -q) || true
+     #       docker rm $(docker ps -a -q) || true
+    #        docker run -d -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app
+    #      EOF
 
