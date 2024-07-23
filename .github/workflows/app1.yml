@@ -56,7 +56,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          echo "$PRIVATE_KEY" > keypair1.pem
+          echo "$EC2_PRIVATE_KEY" > keypair1.pem
           chmod 600 keypai1.pem
           ssh -o StrictHostKeyChecking=no -i keypair1.pem ec2-user@${{ secrets.EC2_HOST }} "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
 
