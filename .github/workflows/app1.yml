@@ -58,7 +58,7 @@ jobs:
         run: |
           echo "$EC2_PRIVATE_KEY" > keypair1.pem
           chmod 600 keypair1.pem
-           cat keypair1
+           cat keypair1.pem
            echo "Testing SSH connection..."
        #   ssh -o StrictHostKeyChecking=no -i keypair1.pem ec2-user@${{ secrets.EC2_HOST }} "echo 'SSH connection successful!'"
         #  ssh -o StrictHostKeyChecking=no -i keypair1.pem ec2-user@${{ secrets.EC2_HOST }} "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
