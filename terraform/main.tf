@@ -1,21 +1,10 @@
 provider "aws" {
-  region = "us-east-1"  
-}
-
-# Data source to get the latest Amazon Linux AMI ID
-data "aws_ami" "latest_amazon_linux" {
-  owners      = ["amazon"]
-  most_recent = true
-
-  filter = {
-    name = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
-  }
+  region = "ap-south-1"  
 }
 
 # Define the EC2 instance
-resource "aws_instance" "my_instance" {
-  ami           = data.aws_ami.latest_amazon_linux.id
+resource "aws_instance" "Terra_instance" {
+  ami           = "Amazon Linux 2023 AMI 2023.5.20240722.0 x86_64 HVM kernel-6.1"
   instance_type = "t2.large"
 
   root_block_device {
