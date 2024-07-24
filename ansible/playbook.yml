@@ -9,7 +9,7 @@
        state: latest
 
     - name: Install Docker
-      amazon.aws.amazon_linux_extras:
+      ansible.builtin.yum:
         name: docker
         state: present
 
