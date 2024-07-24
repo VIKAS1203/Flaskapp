@@ -23,7 +23,7 @@ resource "aws_instance" "Terra_instance" {
 
 # Define the security group
 resource "aws_security_group" "Terra_instance_sg" {
-  name        = "Terrainstance_sg"
+  name        = "Terra-instance_sg"
   description = "Allow inbound traffic"
   
   ingress {
