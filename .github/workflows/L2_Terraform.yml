@@ -95,7 +95,7 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > keypair1.pem
           chmod 600 keypair1.pem
-          ansible-playbook -i ansible/inventory.ini playbook.yml --private-key keypair1.pem
+          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key keypair1.pem
 
       
         
