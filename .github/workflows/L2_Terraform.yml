@@ -89,6 +89,13 @@ jobs:
           pwd
           ls -ltr
 
+      - name: Install Ansible and amazon.aws collection
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install ansible
+          ansible-galaxy collection install amazon.aws
+
       - name: Configure Instance with Ansible
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
