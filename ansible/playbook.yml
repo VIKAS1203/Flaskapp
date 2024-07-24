@@ -1,4 +1,12 @@
 ---
+- name: Install amazon.aws collection
+  hosts: localhost
+  tasks:
+    - name: Install amazon.aws collection
+      ansible.builtin.ansible_galaxy:
+        command: install
+        name: amazon.aws
+        
 - name: Configure EC2 Instance
   hosts: web
   become: yes
