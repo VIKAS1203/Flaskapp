@@ -11,10 +11,11 @@ resource "aws_instance" "Terra_instance" {
     volume_size = 50
     volume_type = "gp2"
   }
-
  
   # Assign a public IP address
   associate_public_ip_address = true
+
+  vpc_security_group_ids = [aws_security_group.Terra_instance_sg.id]
 
   tags = {
     Name = "TerraInstance"
