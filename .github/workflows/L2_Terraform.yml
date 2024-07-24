@@ -62,6 +62,5 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > keypair1.pem
           chmod 600 keypair1.pem
-          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST_L2 "echo 'SSH connection successful!'"
-          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST_L2 "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
-
+          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST "echo 'SSH connection successful!'"
+          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
