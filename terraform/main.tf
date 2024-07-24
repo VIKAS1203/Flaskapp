@@ -6,6 +6,7 @@ provider "aws" {
 resource "aws_instance" "Terra_instance" {
   ami           = "ami-068e0f1a600cd311c"
   instance_type = "t2.large"
+  key_name      = "keypair1"
 
   root_block_device {
     volume_size = 50
