@@ -1,15 +1,8 @@
 ---
-- name: Install amazon.aws collection
-  hosts: localhost
-  tasks:
-    - name: Install amazon.aws collection
-      ansible.builtin.ansible_galaxy:
-        command: install
-        name: amazon.aws
-        
 - name: Configure EC2 Instance
   hosts: web
   become: yes
+  
   tasks:
     - name: Update all packages
       yum:
@@ -17,12 +10,12 @@
         state: latest
 
     - name: Install Docker
-      amazon_linux_extras:
+      amazon.aws.amazon_linux_extras:
         name: docker
         state: present
 
     - name: Start Docker service
-      service:
+      ansible.builtin.service:
         name: docker
         state: started
         enabled: yes
