@@ -1,0 +1,44 @@
+---
+- name: Configure EC2 Instance
+  hosts: web
+  become: yes
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install Docker
+      amazon_linux_extras:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ec2-user to the docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Pull Docker image
+      docker_image:
+        name: "{{ docker_image }}"
+        tag: "{{ docker_tag }}"
+        source: pull
+
+    - name: Run Docker container
+      docker_container:
+        name: simple-web-app
+        image: "{{ docker_image }}:{{ docker_tag }}"
+        state: started
+        ports:
+          - "80:5000"
+        restart_policy: always
+  vars:
+    docker_image: "{{ secrets.DOCKER_USERNAME }}/simple-web-app"
+    docker_tag: latest
