@@ -4,7 +4,7 @@ provider "aws" {
 
 # Define the EC2 instance
 resource "aws_instance" "Terra_instance" {
-  ami           = "Amazon Linux 2023 AMI 2023.5.20240722.0 x86_64 HVM kernel-6.1"
+  ami           = "ami-068e0f1a600cd311c"
   instance_type = "t2.large"
 
   root_block_device {
