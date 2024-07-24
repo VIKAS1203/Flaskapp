@@ -62,12 +62,20 @@ jobs:
         working-directory: ./terraform
         run: terraform apply -auto-approve
 
+      - name: Debug Terraform Output
+        working-directory: terraform
+        run: terraform output -raw instance_public_ip
+
       - name: Fetch EC2 Instance IP
         id: terraform_output
         working-directory: terraform
         run: |
-         IP=$(terraform output -raw instance_public_ip | tr -d '\r')
-         echo "INSTANCE_IP=$IP" >> $GITHUB_ENV
+          IP=$(terraform output -raw instance_public_ip | tr -d '\r' | tr -d '\n')
+          echo "INSTANCE_IP=${IP}" >> $GITHUB_ENV
+
+      - name: Print EC2 Instance IP
+        run: echo "EC2 Instance IP is ${{ env.INSTANCE_IP }}"
+
 
       - name: Create Ansible Inventory
         run: |
