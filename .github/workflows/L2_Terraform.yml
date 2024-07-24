@@ -65,7 +65,7 @@ jobs:
       - name: Fetch EC2 Instance IP
         id: terraform_output
         working-directory: terraform
-        run: echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+        run: echo "INSTANCE_IP=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
 
       - name: Create Ansible Inventory
         run: |
