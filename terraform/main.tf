@@ -78,3 +78,8 @@ data "aws_vpc" "default_vpc" {
 data "aws_subnet_ids" "default_subnet_ids" {
   vpc_id = data.aws_vpc.default_vpc.id
 }
+
+output "instance_public_ip" {
+  value = aws_instance.my_instance.public_ip
+}
+
