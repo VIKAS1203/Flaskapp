@@ -12,20 +12,7 @@ resource "aws_instance" "Terra_instance" {
     volume_type = "gp2"
   }
 
-  # Data source to get the default VPC
-  data "aws_vpc" "default_vpc" {
-    default = true
-  }
-  
-  # Data source to get the default subnet IDs
-  data "aws_subnet_ids" "default_subnet_ids" {
-    vpc_id = data.aws_vpc.default_vpc.id
-  }
-
-  # Use the default VPC and subnet
-  subnet_id = data.aws_subnet_ids.default_subnet_ids.ids[0]
-  vpc_security_group_ids = [aws_security_group.instance_sg.id]
-
+ 
   # Assign a public IP address
   associate_public_ip_address = true
 
@@ -36,10 +23,9 @@ resource "aws_instance" "Terra_instance" {
 
 # Define the security group
 resource "aws_security_group" "instance_sg" {
-  name        = "instance_sg"
+  name        = "Terra_instance_sg"
   description = "Allow inbound traffic"
-  vpc_id      = data.aws_vpc.default_vpc.id
-
+  
   ingress {
     from_port   = 80
     to_port     = 80
