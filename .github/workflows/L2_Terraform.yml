@@ -46,21 +46,30 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/simple-web-app
 
-      - name: Create .ssh directory and known_hosts file
-        run: |
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          
-      - name: Add EC2 host key
-        run: ssh-keyscan -H ${{ secrets.EC2_HOST_L2 }} >> ~/.ssh/known_hosts
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
 
-      - name: Deploy to EC2
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
         env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST_L2}}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform apply -auto-approve
+
+      - name: Fetch EC2 Instance IP
+        id: terraform_output
+        working-directory: terraform
+        run: echo "INSTANCE_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
+
+      - name: Configure Instance with Ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           echo "$PRIVATE_KEY" > keypair1.pem
           chmod 600 keypair1.pem
-          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST "echo 'SSH connection successful!'"
-          ssh -o StrictHostKeyChecking=no -i keypair1.pem $EC2_USER@$EC2_HOST "docker pull ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest && docker run -d -p 80:5000 ${{ secrets.DOCKER_USERNAME }}/simple-web-app:latest"
+          ansible-playbook -i your_inventory_file -u ${{ secrets.EC2_USER }} --private-key keypair1.pem playbook.yml
+      
