@@ -17,13 +17,13 @@ resource "aws_instance" "Terra_instance" {
   associate_public_ip_address = true
 
   tags = {
-    Name = "MyInstance"
+    Name = "TerraInstance"
   }
 }
 
 # Define the security group
-resource "aws_security_group" "instance_sg" {
-  name        = "Terra_instance_sg"
+resource "aws_security_group" "Terra_instance_sg" {
+  name        = "Terrainstance_sg"
   description = "Allow inbound traffic"
   
   ingress {
@@ -56,6 +56,6 @@ resource "aws_security_group" "instance_sg" {
 }
 
 output "instance_public_ip" {
-  value = aws_instance.my_instance.public_ip
+  value = aws_instance.Terra_instance.public_ip
 }
 
