@@ -2,12 +2,16 @@
 - name: Configure EC2 Instance
   hosts: web
   become: yes
-  
   tasks:
     - name: Update all packages
-      yum:
-        name: '*'
-        state: latest
+      amazon.aws.amazon_linux_extras:
+        name: docker
+        state: present
+ # tasks:
+  #  - name: Update all packages
+  #    yum:
+  #      name: '*'
+   #     state: latest
 
     - name: Install Docker
       amazon.aws.amazon_linux_extras:
