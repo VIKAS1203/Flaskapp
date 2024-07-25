@@ -51,5 +51,5 @@
           - "80:5000"
         restart_policy: always
   vars:
-    docker_image: "{{ secrets.DOCKER_USERNAME }}/simple-web-app"
-    docker_tag: latest
+    docker_image: "{{ DOCKER_IMAGE }}"
+    docker_tag: "{{ DOCKER_TAG }}"
