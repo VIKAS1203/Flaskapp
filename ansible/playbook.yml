@@ -4,9 +4,18 @@
   become: yes
   tasks:
     - name: Update all packages
-      yum:
+      dnf:
        name: '*'
        state: latest
+       
+    - name: Clean DNF cache
+      command: dnf clean all
+
+    - name: Update DNF repositories
+      dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
 
     - name: Install Docker
       dnf:
