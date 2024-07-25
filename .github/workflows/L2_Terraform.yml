@@ -74,12 +74,12 @@ jobs:
            echo "IP Address: $INSTANCE_IP"
            pwd
            ls -ltr
-           echo "[web]" > ansible/inventory.ini
-           echo "ec2-instance ansible_host=$INSTANCE_IP" >> ansible/inventory.ini
-           echo "[web:vars]" >> ansible/inventory.ini
-           echo "ansible_user=ec2-user" >> ansible/inventory.ini
-           echo "ansible_ssh_private_key_file=keypair1.pem" >> ansible/inventory.ini
-           cat ansible/inventory.ini
+           echo "[web]" > ../ansible/inventory.ini
+           echo "ec2-instance ansible_host=$INSTANCE_IP" >> ../ansible/inventory.ini
+           echo "[web:vars]" >> ../ansible/inventory.ini
+           echo "ansible_user=ec2-user" >> ../ansible/inventory.ini
+           echo "ansible_ssh_private_key_file=keypair1.pem" >> ../ansible/inventory.ini
+           cat ../ansible/inventory.ini
         #echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV      
 
       - name: Setup SSH Key
