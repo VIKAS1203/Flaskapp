@@ -80,15 +80,17 @@ jobs:
            echo "ansible_user=ec2-user" >> ../ansible/inventory.ini
            echo "ansible_ssh_private_key_file=keypair1.pem" >> ../ansible/inventory.ini
            cat ../ansible/inventory.ini
-            ssh -o StrictHostKeyChecking=no -i keypair1.pem ec2-user@$INSTANCE_IP "echo 'Connection successful'"
+           echo "${{ secrets.EC2_PRIVATE_KEY }}" > keypair1.pem
+           chmod 600 keypair1.pem
+           ssh -o StrictHostKeyChecking=no -i keypair1.pem ec2-user@$INSTANCE_IP "echo 'Connection successful'"
         #echo "INSTANCE_IP=$INSTANCE_IP" >> $GITHUB_ENV      
 
-      - name: Setup SSH Key
-        run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > keypair1.pem
-          chmod 600 keypair1.pem
-          pwd
-          ls -ltr
+      #- name: Setup SSH Key
+      #  run: |
+       #   echo "${{ secrets.EC2_PRIVATE_KEY }}" > keypair1.pem
+       #   chmod 600 keypair1.pem
+       #   pwd
+        #  ls -ltr
 
       - name: Install Ansible and amazon.aws collection
         run: |
@@ -104,7 +106,7 @@ jobs:
           echo "$PRIVATE_KEY" > keypair1.pem
           chmod 600 keypair1.pem
           sleep 180
-          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key keypair1.pem -vvvv
+          ansible-playbook -i ansible/inventory.ini ansible/playbook.yml --private-key keypair1.pem -vv
 
       
         
